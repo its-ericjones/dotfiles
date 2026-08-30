@@ -27,7 +27,7 @@ much easier to type.
 1. Install the applications listed above.
 
 2. Clone this repository (replace `YOUR_USERNAME` with your GitHub username if
-   you have forked it):
+   you've forked it):
 
 ```sh
 git clone git@github.com:YOUR_USERNAME/dotfiles.git ~/dotfiles
@@ -56,7 +56,7 @@ cp ~/dotfiles/hammerspoon/local.example.lua \
 ## Configuring `local.lua`
 
 `local.lua` contains settings that may be different for each Mac and may reveal
-private network information. It is ignored by Git, so your values will not be
+private network information. It's ignored by Git, so your values won't be
 committed to the repository.
 
 The file must return a Lua table with two settings:
@@ -76,7 +76,7 @@ Replace the example values as follows:
 
 - `Home Wi-Fi` and `Office Wi-Fi` are Wi-Fi network names (SSIDs) that you
   trust. Use the names exactly as they appear in the macOS Wi-Fi menu. Add one
-  `["network name"] = true,` line for each trusted network. It is fine to keep
+  `["network name"] = true,` line for each trusted network. It's fine to keep
   only one line.
 - `100.64.0.10` is the Tailscale IP address of the device configured as your
   exit node. You can find it in the Tailscale app or by running `tailscale
@@ -84,11 +84,11 @@ Replace the example values as follows:
 
 On a trusted network, the automation disables the Tailscale exit node. On any
 other named Wi-Fi network, it enables the configured exit node. If Hammerspoon
-cannot read the current network name, it does not enable the exit node.
+can't read the current network name, it doesn't enable the exit node.
 
 Keep the quotation marks, commas, braces, and the final `return` structure as
 shown. After making a change, choose **Reload Config** from the Hammerspoon
-menu. If the configuration does not load, select **Console** from that menu to
+menu. If the configuration doesn't load, select **Console** from that menu to
 see the Lua error and its line number.
 
 ## Hammerspoon shortcuts
@@ -125,7 +125,7 @@ Press the shortcut again while its application is frontmost to hide it.
 | Hyper + V | Open searchable, in-memory clipboard history |
 
 The menu bar also mirrors nonzero Dock badge counts for Messages and Reminders.
-Clipboard history is not written to disk and is cleared when Hammerspoon exits
+Clipboard history isn't written to disk and is cleared when Hammerspoon exits
 or reloads.
 
 ## Permissions

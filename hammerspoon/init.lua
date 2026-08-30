@@ -2,7 +2,7 @@ local localConfig = dofile(hs.configdir .. "/local.lua")
 local hyper = {"cmd", "alt", "ctrl", "shift"}
 
 -- Application launchers ------------------------------------------------------
--- Launch or focus an application; hide it when it is already frontmost.
+-- Launch or focus an application; hide it when it's already frontmost.
 local function bindApp(key, applicationName)
     hs.hotkey.bind(hyper, key, function()
         local application = hs.application.find(applicationName)
@@ -119,8 +119,8 @@ bindMoveToDisplay(".", function(display) -- next display
 end)
 
 -- Caffeine ------------------------------------------------------------------
--- Hyper + P toggles sleep prevention. The menu-bar indicator is only visible
--- while caffeine is active.
+-- Hyper + P toggles sleep prevention. The menu-bar indicator isn't visible
+-- unless caffeine is active.
 local caffeineMenu = nil
 
 local function updateCaffeineMenu(isActive)
@@ -143,7 +143,7 @@ hs.hotkey.bind(hyper, "P", toggleCaffeine)
 updateCaffeineMenu(hs.caffeinate.get("displayIdle"))
 
 -- Dock badge indicators -----------------------------------------------------
--- Mirror an application's Dock badge in the menu bar. The item is hidden when
+-- Mirror an application's Dock badge in the menu bar. The item isn't shown when
 -- its badge is empty or zero.
 local function monitorDockBadge(applicationName, icon)
     local menu = nil
@@ -203,7 +203,7 @@ local tailscaleTask = nil
 
 local function updateTailscaleExitNode()
     local networkName = hs.wifi.currentNetwork()
-    -- Fail closed when macOS does not reveal the SSID. A nil network name can
+    -- Fail closed when macOS doesn't reveal the SSID. A nil network name can
     -- occur when Hammerspoon lacks Location Services permission.
     local shouldEnable = networkName ~= nil and not trustedNetworks[networkName]
 
@@ -237,7 +237,7 @@ updateTailscaleExitNode()
 
 -- Clipboard history ---------------------------------------------------------
 -- Keep recent text copies in memory and search them with Hyper + V. History
--- is intentionally cleared whenever Hammerspoon quits or reloads.
+-- isn't saved and gets cleared whenever Hammerspoon quits or reloads.
 local clipboardHistory = {}
 local clipboardHistoryLimit = 50
 
