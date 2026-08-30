@@ -124,9 +124,10 @@ Press the shortcut again while its application is frontmost to hide it.
 | Hyper + P | Toggle sleep prevention; a coffee icon appears while active |
 | Hyper + V | Open searchable, in-memory clipboard history |
 
-The menu bar also mirrors nonzero Dock badge counts for Messages and Reminders.
-Clipboard history isn't written to disk and is cleared when Hammerspoon exits
-or reloads.
+One shared menu-bar item shows the coffee icon and any nonzero Dock badge counts
+for Messages and Reminders. Click it to toggle caffeine or open an app with a
+badge. Clipboard history isn't written to disk and is cleared when Hammerspoon
+exits or reloads.
 
 ## Permissions
 

@@ -118,35 +118,78 @@ bindMoveToDisplay(".", function(display) -- next display
     return display:next()
 end)
 
--- Caffeine ------------------------------------------------------------------
--- Hyper + P toggles sleep prevention. The menu-bar indicator isn't visible
--- unless caffeine is active.
-local caffeineMenu = nil
+-- Menu-bar status -----------------------------------------------------------
+-- Combine caffeine and Dock badges in one item so they don't compete for
+-- limited menu-bar space.
+local statusMenu = hs.menubar.new()
+local caffeineActive = hs.caffeinate.get("displayIdle")
+local dockBadgeCounts = {
+    Messages = 0,
+    Reminders = 0,
+}
+local toggleCaffeine
 
-local function updateCaffeineMenu(isActive)
-    if isActive then
-        caffeineMenu = caffeineMenu or hs.menubar.new()
-        caffeineMenu:setTitle("☕")
-        caffeineMenu:setTooltip("Caffeine is active")
-    elseif caffeineMenu then
-        caffeineMenu:delete()
-        caffeineMenu = nil
+local function refreshStatusMenu()
+    local indicators = {}
+    if caffeineActive then
+        table.insert(indicators, "☕")
     end
+    if dockBadgeCounts.Messages > 0 then
+        table.insert(indicators, "💬 " .. dockBadgeCounts.Messages)
+    end
+    if dockBadgeCounts.Reminders > 0 then
+        table.insert(indicators, "✓ " .. dockBadgeCounts.Reminders)
+    end
+
+    if #indicators == 0 then
+        statusMenu:removeFromMenuBar()
+        return
+    end
+
+    if not statusMenu:isInMenuBar() then
+        statusMenu:returnToMenuBar()
+    end
+    statusMenu:setTitle(table.concat(indicators, "  "))
+    statusMenu:setTooltip("Hammerspoon status")
 end
 
-local function toggleCaffeine()
-    local isActive = hs.caffeinate.toggle("displayIdle")
-    updateCaffeineMenu(isActive)
+statusMenu:setMenu(function()
+    return {
+        {
+            title = caffeineActive and "Disable caffeine" or "Enable caffeine",
+            checked = caffeineActive,
+            fn = toggleCaffeine,
+        },
+        {title = "-"},
+        {
+            title = "Open Messages (" .. dockBadgeCounts.Messages .. ")",
+            disabled = dockBadgeCounts.Messages == 0,
+            fn = function()
+                hs.application.launchOrFocus("Messages")
+            end,
+        },
+        {
+            title = "Open Reminders (" .. dockBadgeCounts.Reminders .. ")",
+            disabled = dockBadgeCounts.Reminders == 0,
+            fn = function()
+                hs.application.launchOrFocus("Reminders")
+            end,
+        },
+    }
+end)
+
+-- Caffeine ------------------------------------------------------------------
+-- Hyper + P toggles sleep prevention and refreshes the shared status item.
+toggleCaffeine = function()
+    caffeineActive = hs.caffeinate.toggle("displayIdle")
+    refreshStatusMenu()
 end
 
 hs.hotkey.bind(hyper, "P", toggleCaffeine)
-updateCaffeineMenu(hs.caffeinate.get("displayIdle"))
 
 -- Dock badge indicators -----------------------------------------------------
--- Mirror an application's Dock badge in the menu bar. The item isn't shown when
--- its badge is empty or zero.
-local function monitorDockBadge(applicationName, icon)
-    local menu = nil
+-- Mirror an application's nonzero Dock badge in the shared status item.
+local function monitorDockBadge(applicationName)
     local script = string.format([[
         tell application "System Events"
             tell process "Dock"
@@ -167,20 +210,8 @@ local function monitorDockBadge(applicationName, icon)
         local badgeCount = success
             and tonumber(tostring(badgeValue):match("%d+")) or 0
 
-        if badgeCount > 0 then
-            if not menu then
-                menu = hs.menubar.new()
-                menu:setClickCallback(function()
-                    hs.application.launchOrFocus(applicationName)
-                end)
-            end
-
-            menu:setTitle(icon .. " " .. badgeCount)
-            menu:setTooltip(applicationName .. ": " .. badgeCount)
-        elseif menu then
-            menu:delete()
-            menu = nil
-        end
+        dockBadgeCounts[applicationName] = badgeCount
+        refreshStatusMenu()
     end
 
     updateMenu()
@@ -189,8 +220,8 @@ end
 
 -- Keep references to the timers so they continue running.
 dockBadgeTimers = {
-    monitorDockBadge("Messages", "💬"),
-    monitorDockBadge("Reminders", "✓"),
+    monitorDockBadge("Messages"),
+    monitorDockBadge("Reminders"),
 }
 
 -- Tailscale exit node -------------------------------------------------------
