@@ -33,31 +33,34 @@ much easier to type.
 git clone git@github.com:YOUR_USERNAME/dotfiles.git ~/dotfiles
 ```
 
-3. Link the repository's Hammerspoon folder to the location where Hammerspoon
-   expects its configuration:
+3. Create Hammerspoon's configuration directory if it doesn't already exist:
 
 ```sh
-ln -s ~/dotfiles/hammerspoon ~/.hammerspoon
+mkdir -p ~/.hammerspoon
 ```
 
-If `~/.hammerspoon` already exists, back it up before creating the link.
-
-4. Create your private, machine-specific configuration from the example:
+4. Link the repository's `init.lua` to the location where Hammerspoon expects its
+   main configuration:
 
 ```sh
-cp ~/dotfiles/hammerspoon/local.example.lua \
-   ~/dotfiles/hammerspoon/local.lua
+ln -s ~/dotfiles/hammerspoon/init.lua ~/.hammerspoon/init.lua
 ```
 
-5. Edit `~/dotfiles/hammerspoon/local.lua` as described in the next section.
+5. Create your private, machine-specific configuration from the example:
 
-6. Open Hammerspoon and select **Reload Config** from its menu-bar icon.
+```sh
+cp ~/dotfiles/hammerspoon/local.example.lua ~/.hammerspoon/local.lua
+```
+
+6. Edit `~/.hammerspoon/local.lua` as described in the next section.
+
+7. Open Hammerspoon and select **Reload Config** from its menu-bar icon.
 
 ## Configuring `local.lua`
 
 `local.lua` contains settings that may be different for each Mac and may reveal
-private network information. It's ignored by Git, so your values won't be
-committed to the repository.
+private network information. It lives at `~/.hammerspoon/local.lua` and is not
+stored in the repository.
 
 The file must return a Lua table with two settings:
 
