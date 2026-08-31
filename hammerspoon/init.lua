@@ -17,6 +17,7 @@ end
 
 -- Hyper + key -> application
 bindApp("C", "Calendar")
+bindApp("F", "Finder")
 bindApp("G", "Google Chrome")
 bindApp("M", "Messages")
 bindApp("O", "Obsidian")

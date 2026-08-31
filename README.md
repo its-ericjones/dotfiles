@@ -103,6 +103,7 @@ Press the shortcut again while its application is frontmost to hide it.
 | Shortcut | Application |
 | --- | --- |
 | Hyper + C | Calendar |
+| Hyper + F | Finder |
 | Hyper + G | Google Chrome |
 | Hyper + M | Messages |
 | Hyper + O | Obsidian |
