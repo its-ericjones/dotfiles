@@ -1,9 +1,10 @@
 # Dotfiles
 
 Personal macOS configuration files for keyboard shortcuts, window management,
-clipboard history, and automatic Tailscale exit-node switching. Most of the
-automation is provided by [Hammerspoon](https://www.hammerspoon.org/), a macOS
-app that runs Lua configuration files.
+clipboard history, Dock badge indicators, and automatic Tailscale exit-node
+switching. Most of the automation is provided by
+[Hammerspoon](https://www.hammerspoon.org/), a macOS app that runs Lua
+configuration files.
 
 ## Contents
 
@@ -29,32 +30,39 @@ much easier to type.
 2. Clone this repository (replace `YOUR_USERNAME` with your GitHub username if
    you've forked it):
 
-```sh
-git clone git@github.com:YOUR_USERNAME/dotfiles.git ~/dotfiles
-```
+   ```
+   git clone git@github.com:YOUR_USERNAME/dotfiles.git ~/dotfiles
+   ```
 
 3. Create Hammerspoon's configuration directory if it doesn't already exist:
 
-```sh
-mkdir -p ~/.hammerspoon
-```
+   ```
+   mkdir -p ~/.hammerspoon
+   ```
 
 4. Link the repository's `init.lua` to the location where Hammerspoon expects its
    main configuration:
 
-```sh
-ln -s ~/dotfiles/hammerspoon/init.lua ~/.hammerspoon/init.lua
-```
+   ```
+   ln -s ~/dotfiles/hammerspoon/init.lua ~/.hammerspoon/init.lua
+   ```
+
+   Finder shows this link as an alias. Edit the file in the repository (or
+   through the link), and don't replace the link with a copy, or the repository
+   will stop tracking your changes.
 
 5. Create your private, machine-specific configuration from the example:
 
-```sh
-cp ~/dotfiles/hammerspoon/local.example.lua ~/.hammerspoon/local.lua
-```
+   ```
+   cp ~/dotfiles/hammerspoon/local.example.lua ~/.hammerspoon/local.lua
+   ```
 
 6. Edit `~/.hammerspoon/local.lua` as described in the next section.
 
 7. Open Hammerspoon and select **Reload Config** from its menu-bar icon.
+
+To pick up changes made on another Mac, run `git pull` in `~/dotfiles` and
+reload the config.
 
 ## Configuring `local.lua`
 
@@ -82,8 +90,8 @@ Replace the example values as follows:
   `["network name"] = true,` line for each trusted network. It's fine to keep
   only one line.
 - `100.64.0.10` is the Tailscale IP address of the device configured as your
-  exit node. You can find it in the Tailscale app or by running `tailscale
-  status` in Terminal.
+  exit node. You can find it in the Tailscale app or by running
+  `tailscale status` in Terminal.
 
 On a trusted network, the automation disables the Tailscale exit node. On any
 other named Wi-Fi network, it enables the configured exit node. If Hammerspoon
@@ -100,38 +108,61 @@ see the Lua error and its line number.
 
 Press the shortcut again while its application is frontmost to hide it.
 
-| Shortcut | Application |
-| --- | --- |
-| Hyper + C | Calendar |
-| Hyper + F | Finder |
-| Hyper + G | Google Chrome |
-| Hyper + M | Messages |
-| Hyper + O | Obsidian |
-| Hyper + R | Reminders |
-| Hyper + S | Safari |
-| Hyper + T | Terminal |
+| Shortcut  | Application        |
+| --------- | ------------------ |
+| Hyper + C | Calendar           |
+| Hyper + F | Finder             |
+| Hyper + G | Google Chrome      |
+| Hyper + M | Messages           |
+| Hyper + O | Obsidian           |
+| Hyper + R | Reminders          |
+| Hyper + S | Safari             |
+| Hyper + T | Terminal           |
 | Hyper + X | Visual Studio Code |
 
 ### Window management
 
-| Shortcut | Action |
-| --- | --- |
-| Hyper + H/J/K/L | Left/bottom/top/right half |
+| Shortcut        | Action                                              |
+| --------------- | --------------------------------------------------- |
+| Hyper + H/J/K/L | Left/bottom/top/right half                          |
 | Hyper + Y/U/B/N | Top-left/top-right/bottom-left/bottom-right quarter |
-| Hyper + Return | Toggle maximize and restore |
-| Hyper + , / . | Move to previous/next display |
+| Hyper + Return  | Toggle maximize and restore                         |
+| Hyper + , / .   | Move to previous/next display                       |
 
 ### Utilities
 
-| Shortcut | Action |
-| --- | --- |
+| Shortcut  | Action                                                      |
+| --------- | ----------------------------------------------------------- |
 | Hyper + P | Toggle sleep prevention; a coffee icon appears while active |
-| Hyper + V | Open searchable, in-memory clipboard history |
+| Hyper + V | Open searchable, in-memory clipboard history                |
 
-One shared menu-bar item shows the coffee icon and any nonzero Dock badge counts
-for Messages and Reminders. Click it to toggle caffeine or open an app with a
-badge. Clipboard history isn't written to disk and is cleared when Hammerspoon
-exits or reloads.
+## Menu-bar status item
+
+One shared menu-bar item shows the coffee icon and the nonzero Dock badge
+counts for Messages, Reminders, and Things. Click it to toggle caffeine or open
+an app that has a badge. The item disappears when there is nothing to show.
+
+Clipboard history isn't written to disk and is cleared when Hammerspoon exits
+or reloads.
+
+### Adding another badge
+
+The monitored apps are listed in the `dockBadgeApps` table in `init.lua`. To
+mirror another app's Dock badge, add one entry:
+
+```lua
+{name = "Things", dockName = "Things", launchName = "Things3", icon = "☑️"},
+```
+
+- `name` — label used in the dropdown menu
+- `dockName` — the app's label in the Dock (hover over its icon to check)
+- `launchName` — the name `hs.application.launchOrFocus` expects, which can
+  differ from the Dock label
+- `icon` — what appears in the menu bar next to the count
+
+Entries appear in the menu bar and dropdown in the order listed. Badges only
+appear if the app's own badge setting is turned on (in Things, enable the badge
+count under Settings → General).
 
 ## Permissions
 
@@ -141,3 +172,5 @@ Security**:
 - Accessibility for window, keyboard, Dock-badge, and paste actions
 - Automation for reading the Dock through System Events
 - Location Services for identifying the current Wi-Fi network
+
+These permissions are granted per Mac, so repeat them on each machine.
